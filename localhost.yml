@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+
+  games:
+    image: krizius/php:8.3-apache
+    volumes:
+      - .:/var/www
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=inbound
+        - traefik.http.routers.games.rule=Host(`games.localhost`)
+        - traefik.http.routers.games.service=games
+        - traefik.http.services.games.loadbalancer.server.port=80
+      restart_policy:
+        condition: on-failure
+    working_dir: /var/www
+    networks:
+      - inbound
+
+networks:
+  inbound:
+    external: true
